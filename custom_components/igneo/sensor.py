@@ -29,6 +29,9 @@ async def async_setup_entry(
 
     coordinator: IgleoDataUpdateCoordinator = hass.data[DOMAIN][entry.entry_id]
 
+    # Store config for fuel estimation
+    coordinator.config = entry.data
+
     sensors = [
         IgleoBoilerTemperatureSensor(coordinator, "Boiler Temperature"),
         IgleoBoilerCalculatedTemperatureSensor(coordinator, "Boiler Calculated Temperature"),
@@ -38,6 +41,7 @@ async def async_setup_entry(
         IgleoFuelCounterSensor(coordinator, "Fuel Counter"),
         IgleoOxygenLevelSensor(coordinator, "Oxygen Level"),
         IgleoBurnerStatusSensor(coordinator, "Burner Status"),
+        IgleoFuelDaysRemainingEstimate(coordinator, "Fuel Days Remaining"),
     ]
 
     async_add_entities(sensors)
@@ -191,3 +195,24 @@ class IgleoBurnerStatusSensor(IgleoBaseSensor):
         if self.coordinator.data:
             return self.coordinator.data.burner_status
         return None
+
+
+class IgleoFuelDaysRemainingEstimate(IgleoBaseSensor):
+    """Estimated days of fuel remaining."""
+
+    _attr_state_class = SensorStateClass.MEASUREMENT
+    _attr_native_unit_of_measurement = "days"
+
+    @property
+    def native_value(self):
+        """Return estimated days remaining."""
+        if not self.coordinator.data:
+            return None
+
+        fuel = self.coordinator.data.fuel_counter / 1000  # Convert to kg
+        daily_consumption = self.coordinator.config.get("daily_consumption", 5)
+
+        if daily_consumption <= 0:
+            return None
+
+        return round(fuel / daily_consumption, 1)

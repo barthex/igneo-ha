@@ -3,11 +3,13 @@
     "step": {
       "user": {
         "title": "Configure Estyma Igneo Slim",
-        "description": "Enter your igneo.pl credentials and device ID",
+        "description": "Enter your igneo.pl credentials and boiler specifications",
         "data": {
           "username": "Username",
           "password": "Password",
-          "device_id": "Device ID (from igneo.pl)"
+          "device_id": "Device ID (from igneo.pl URL)",
+          "fuel_capacity": "Standard fuel load (kg) - e.g., 75kg = 5 bags × 15kg",
+          "daily_consumption": "Estimated daily fuel consumption (kg) - for fuel prediction"
         }
       }
     },

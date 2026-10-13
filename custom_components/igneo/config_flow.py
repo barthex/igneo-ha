@@ -10,6 +10,9 @@ from homeassistant.data_entry_flow import FlowResult
 
 from . import DOMAIN, CONF_DEVICE_ID
 
+CONF_FUEL_CAPACITY = "fuel_capacity"
+CONF_DAILY_CONSUMPTION = "daily_consumption"
+
 _LOGGER = logging.getLogger(__name__)
 
 
@@ -68,7 +71,13 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     vol.Required(CONF_USERNAME): str,
                     vol.Required(CONF_PASSWORD): str,
                     vol.Required(CONF_DEVICE_ID): str,
+                    vol.Optional(CONF_FUEL_CAPACITY, default=75): vol.Range(min=10, max=500),
+                    vol.Optional(CONF_DAILY_CONSUMPTION, default=5): vol.Range(min=0.5, max=50),
                 }
             ),
             errors=errors,
+            description_placeholders={
+                "fuel_info": "Standard fuel load in kg (e.g., 75kg is 5 bags of 15kg each)",
+                "consumption_info": "Estimated daily fuel consumption in kg for prediction",
+            },
         )
