@@ -1,0 +1,117 @@
+# Example Lovelace configuration for Estyma Igneo Slim
+# Add this to your Home Assistant dashboard or configuration.yaml
+
+type: vertical-stack
+cards:
+  # Header
+  - type: heading
+    heading: "🔥 Estyma Igneo Slim"
+    heading_level: 2
+
+  # Status overview
+  - type: entities
+    title: "Status"
+    entities:
+      - entity: sensor.igneo_burner_status
+        name: "Palnik"
+      - entity: binary_sensor.igneo_burner_active
+        name: "Grzanie"
+      - entity: binary_sensor.igneo_low_fuel_alert
+        name: "Brak paliwa"
+      - entity: binary_sensor.igneo_high_boiler_temperature
+        name: "Wysoka temp"
+
+  # Temperature monitoring
+  - type: horizontal-stack
+    cards:
+      - type: custom:button-card
+        entity: sensor.igneo_boiler_temperature
+        name: "Kocioł"
+        icon: mdi:thermometer
+        show_state: true
+        state_display: "[[[ return entity.state + '°C' ]]]"
+
+      - type: custom:button-card
+        entity: sensor.igneo_room_temperature
+        name: "Pokój"
+        icon: mdi:home-thermometer
+        show_state: true
+        state_display: "[[[ return entity.state + '°C' ]]]"
+
+      - type: custom:button-card
+        entity: sensor.igneo_cwu_temperature
+        name: "CWU"
+        icon: mdi:water-thermometer
+        show_state: true
+        state_display: "[[[ return entity.state + '°C' ]]]"
+
+  # CWU Temperature Control
+  - type: thermostat
+    entity: climate.igneo_hot_water_cwu
+    title: "Gorąca Woda"
+
+  # Room Temperature Control
+  - type: thermostat
+    entity: climate.igneo_room_temperature
+    title: "Temperatura Pokoju"
+
+  # Fuel consumption gauge
+  - type: gauge
+    entity: sensor.igneo_fuel_counter
+    unit: kg
+    min: 0
+    max: 100
+    segments:
+      - from: 0
+        color: "#e74c3c"
+      - from: 25
+        color: "#f39c12"
+      - from: 50
+        color: "#f1c40f"
+      - from: 75
+        color: "#2ecc71"
+    needle: true
+    title: "Paliwo"
+
+  # Quick actions
+  - type: horizontal-stack
+    cards:
+      - type: button
+        name: "Zwiększ CWU"
+        icon: mdi:chevron-up
+        tap_action:
+          action: call-service
+          service: igneo.increase_temperature
+          data:
+            device_id: "2023873659"
+
+      - type: button
+        name: "Zmniejsz CWU"
+        icon: mdi:chevron-down
+        tap_action:
+          action: call-service
+          service: igneo.decrease_temperature
+          data:
+            device_id: "2023873659"
+
+  # Statistics
+  - type: entities
+    title: "Dane"
+    entities:
+      - entity: sensor.igneo_fuel_counter
+        name: "Licznik paliwa"
+      - entity: sensor.igneo_oxygen_level
+        name: "Tlen w spalinach"
+      - entity: sensor.igneo_boiler_calculated_temperature
+        name: "Temp obliczona"
+
+  # History chart (requires history-stats)
+  - type: custom:mini-graph-card
+    entities:
+      - sensor.igneo_boiler_temperature
+      - sensor.igneo_room_temperature
+      - sensor.igneo_cwu_temperature
+    name: "Historia Temperatur"
+    line_width: 2
+    font_size: 80
+    hours_to_show: 24

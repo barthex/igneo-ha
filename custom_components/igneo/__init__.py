@@ -14,12 +14,14 @@ from homeassistant.const import (
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
+from .services import async_setup_services
+
 _LOGGER = logging.getLogger(__name__)
 
 DOMAIN = "igneo"
 CONF_DEVICE_ID = "device_id"
 
-PLATFORMS = [Platform.SENSOR, Platform.CLIMATE]
+PLATFORMS = [Platform.SENSOR, Platform.CLIMATE, Platform.BINARY_SENSOR]
 
 SCAN_INTERVAL = timedelta(minutes=5)
 
@@ -40,6 +42,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = coordinator
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+
+    # Setup services (one-time)
+    if not hass.data.get(f"{DOMAIN}_services_setup"):
+        await async_setup_services(hass)
+        hass.data[f"{DOMAIN}_services_setup"] = True
 
     return True
 
