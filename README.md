@@ -292,7 +292,7 @@ This integration is not affiliated with Estyma Electronics. Use at your own risk
 
 If you find this integration useful and want to support its development:
 
-[![Buy me a coffee](https://img.shields.io/badge/Buy%20me%20a%20coffee-FFD700?logo=buy-me-a-coffee&logoColor=black)](YOUR_BUYMEACOFFEE_LINK)
+[![Buy me a coffee](https://img.shields.io/badge/Buy%20me%20a%20coffee-FFD700?logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/barthex)
 
 Your support helps fund:
 - New features and improvements
