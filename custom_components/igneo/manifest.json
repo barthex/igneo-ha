@@ -1,10 +1,10 @@
 {
   "domain": "igneo",
   "name": "Estyma Igneo Slim",
-  "codeowners": ["@bartosztalaga"],
+  "codeowners": ["@barthex"],
   "config_flow": true,
-  "documentation": "https://github.com/bartosztalaga/estyma-sterownik",
-  "issue_tracker": "https://github.com/bartosztalaga/estyma-sterownik/issues",
+  "documentation": "https://github.com/barthex/igneo-ha",
+  "issue_tracker": "https://github.com/barthex/igneo-ha/issues",
   "requirements": [
     "requests==2.32.3",
     "selenium==4.51.0",
