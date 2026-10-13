@@ -6,12 +6,9 @@ echo "🔧 Setting up virtual environment..."
 # Create venv
 python3 -m venv venv
 
-# Activate venv
-source venv/bin/activate
-
-# Install requirements
+# Install requirements in venv
 echo "📦 Installing dependencies..."
-pip install -r requirements.txt
+./venv/bin/pip install -r requirements.txt
 
 echo "✅ Setup complete!"
 echo ""
