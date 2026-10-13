@@ -1,0 +1,16 @@
+{
+  "name": "Estyma Igneo Slim",
+  "homeassistant": "2024.1.0",
+  "documentation": "https://github.com/barthex/igneo-ha",
+  "requirements": [
+    "requests==2.32.3",
+    "selenium==4.51.0",
+    "webdriver-manager==4.1.2"
+  ],
+  "version": "0.1.0",
+  "codeowners": ["@barthex"],
+  "categories": [
+    "integration",
+    "climate"
+  ]
+}

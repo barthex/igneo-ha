@@ -62,7 +62,29 @@ scripts/
 
 ## Installation
 
-### Home Assistant (Custom Component)
+### 🚀 Method 1: HACS (Recommended)
+
+1. Install [HACS](https://hacs.xyz/docs/setup/prerequisites) if not already installed
+
+2. In Home Assistant: **HACS → Integrations → ⋮ → Custom repositories**
+
+3. Add repository:
+   - **Repository URL**: `https://github.com/barthex/igneo-ha`
+   - **Category**: Integration
+   - Click **Create**
+
+4. Find **Estyma Igneo Slim** in HACS → **Install**
+
+5. **Restart** Home Assistant
+
+6. Go to **Settings → Devices & Services → Create Integration → Igneo**
+
+7. Enter credentials:
+   - **Username**: your igneo.pl login
+   - **Password**: your igneo.pl password
+   - **Device ID**: found in igneo.pl URL (e.g., `https://igneo.pl/device/2023873659`)
+
+### Manual Installation
 
 1. Copy `custom_components/igneo` to your HA `custom_components` folder:
 ```bash
@@ -71,7 +93,7 @@ cp -r custom_components/igneo ~/.homeassistant/custom_components/
 
 2. Restart Home Assistant
 
-3. Go to Settings → Devices & Services → Create Integration → Search "Igneo"
+3. Go to **Settings → Devices & Services → Create Integration → Search "Igneo"**
 
 4. Enter your igneo.pl credentials and device ID
 
