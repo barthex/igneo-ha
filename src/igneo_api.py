@@ -3,6 +3,7 @@
 import requests
 import json
 import time
+from pathlib import Path
 from typing import Dict, Optional, Any
 from dataclasses import dataclass
 from enum import Enum
@@ -30,95 +31,120 @@ class BurnerStatus(Enum):
 @dataclass
 class BoilerData:
     """Data from boiler."""
-    # Pump status (bit flags)
     pump_status: int
-
-    # Fuel consumption (kg)
     fuel_counter: float
-
-    # Temperature (°C)
     boiler_temp: float
     boiler_temp_calculated: float
     room_temp: float
     cwu_temp: float
     cwu_temp_target: float
-
-    # Status
     burner_status: str
     oxygen_level: float
-
-    # Device info
     device_type: str
     co_circuits: int
     cwu_circuits: int
-
-    # Raw data
     raw: Dict[str, Any]
 
 
 class IgleoClient:
-    """Client for igneo.pl API."""
+    """Client for igneo.pl API with cookie caching."""
 
     BASE_URL = "https://igneo.pl"
 
-    def __init__(self, username: str, password: str, device_id: str):
-        """
-        Initialize client.
-
-        Args:
-            username: Login username (e.g., barthex)
-            password: Login password
-            device_id: Device ID (e.g., 2023873659)
-        """
+    def __init__(self, username: str, password: str, device_id: str, cache_dir: Optional[str] = None):
         self.username = username
         self.password = password
         self.device_id = device_id
         self.session = requests.Session()
         self._authenticated = False
 
+        # Setup cookie cache
+        if cache_dir:
+            self.cache_dir = Path(cache_dir)
+        else:
+            self.cache_dir = Path.home() / ".igneo"
+        self.cache_dir.mkdir(exist_ok=True)
+        self.cookies_file = self.cache_dir / f"cookies_{username}_{device_id}.json"
+
+        self._load_cached_cookies()
+
+    def _load_cached_cookies(self) -> bool:
+        """Load cookies from JSON cache."""
+        try:
+            if self.cookies_file.exists():
+                with open(self.cookies_file, 'r') as f:
+                    cookies = json.load(f)
+                    for name, value in cookies.items():
+                        self.session.cookies.set(name, value)
+                    return True
+        except Exception as e:
+            print(f"⚠️  Cookie load error: {e}")
+        return False
+
+    def _save_cached_cookies(self) -> None:
+        """Save cookies to JSON cache."""
+        try:
+            cookies_dict = {name: value for name, value in self.session.cookies.items()}
+            with open(self.cookies_file, 'w') as f:
+                json.dump(cookies_dict, f)
+        except Exception as e:
+            print(f"⚠️  Cookie save error: {e}")
+
     def login(self) -> bool:
-        """Authenticate with igneo.pl using Selenium."""
+        """Login with cached cookies or Selenium."""
+        # Try cached cookies first
+        if self.cookies_file.exists():
+            try:
+                response = self.session.post(
+                    f"{self.BASE_URL}/info_panel_update",
+                    data={"id_urzadzenia": self.device_id},
+                    timeout=5
+                )
+                if response.status_code == 200 and response.text.startswith('{'):
+                    self._authenticated = True
+                    return True
+            except:
+                pass
+
+        # Need full login
         if not HAS_SELENIUM:
-            raise RuntimeError("Selenium is required. Install: pip install selenium webdriver-manager")
+            raise RuntimeError("Selenium required: pip install selenium webdriver-manager")
 
         try:
+            print("🔐 Logging in (headless Chrome)...")
             options = Options()
             options.add_argument("--no-sandbox")
             options.add_argument("--disable-dev-shm-usage")
-            options.add_argument("--headless")  # Run without GUI
+            options.add_argument("--headless")
 
             service = Service(ChromeDriverManager().install())
             driver = webdriver.Chrome(service=service, options=options)
 
-            driver.get(f"{self.BASE_URL}")
+            driver.get(self.BASE_URL)
             time.sleep(2)
 
-            # Fill login form
             inputs = driver.find_elements(By.TAG_NAME, "input")
-            inputs[0].send_keys(self.username)  # login field
-            inputs[1].send_keys(self.password)  # haslo field
-            inputs[2].click()                    # zaloguj button
-
+            inputs[0].send_keys(self.username)
+            inputs[1].send_keys(self.password)
+            inputs[2].click()
             time.sleep(6)
 
             # Extract cookies
             for cookie in driver.get_cookies():
-                self.session.cookies.set(
-                    cookie['name'],
-                    cookie['value'],
-                    domain=cookie.get('domain'),
-                    path=cookie.get('path')
-                )
+                self.session.cookies.set(cookie['name'], cookie['value'])
 
             driver.quit()
+
+            # Save to cache
+            self._save_cached_cookies()
             self._authenticated = True
             return True
         except Exception as e:
-            print(f"Login error: {e}")
+            print(f"❌ Login error: {e}")
             return False
 
     def get_device_data(self) -> Optional[BoilerData]:
-        """Get device data (temperature, status, fuel counter, etc)."""
+        """Get device data."""
         if not self._authenticated:
             if not self.login():
                 raise RuntimeError("Not authenticated")
@@ -136,20 +162,11 @@ class IgleoClient:
             data = response.json()
             return self._parse_boiler_data(data)
         except Exception as e:
-            print(f"Get device data error: {e}")
+            print(f"❌ Get device data error: {e}")
             return None
 
     def set_parameter(self, param_name: str, value: Any) -> Optional[int]:
-        """
-        Set boiler parameter.
-
-        Args:
-            param_name: Parameter name (e.g., cwu_zad_komf_obw1_sub1)
-            value: Value to set
-
-        Returns:
-            Order number if successful
-        """
+        """Set boiler parameter."""
         if not self._authenticated:
             if not self.login():
                 raise RuntimeError("Not authenticated")
@@ -168,19 +185,13 @@ class IgleoClient:
             if response.status_code != 200:
                 raise RuntimeError(f"API error: {response.status_code}")
 
-            # Response is order number as string
             return int(response.text)
         except Exception as e:
-            print(f"Set parameter error: {e}")
+            print(f"❌ Set parameter error: {e}")
             return None
 
     def check_order_status(self, order_number: int) -> Optional[str]:
-        """
-        Check order status.
-
-        Returns:
-            Status: "nowy" (new), "wysłano" (sent), "zrealizowano" (completed)
-        """
+        """Check order status."""
         if not self._authenticated:
             if not self.login():
                 raise RuntimeError("Not authenticated")
@@ -200,7 +211,7 @@ class IgleoClient:
 
             return response.text.strip()
         except Exception as e:
-            print(f"Check order status error: {e}")
+            print(f"❌ Check order status error: {e}")
             return None
 
     def set_cwu_comfort_temp(self, temp: float) -> Optional[int]:
@@ -213,7 +224,7 @@ class IgleoClient:
 
     @staticmethod
     def _parse_boiler_data(data: Dict) -> BoilerData:
-        """Parse API response to BoilerData."""
+        """Parse API response."""
         return BoilerData(
             pump_status=data.get("stan_pomp_sub1", 0),
             fuel_counter=data.get("licznik_paliwa_sub1", 0),
