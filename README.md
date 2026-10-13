@@ -194,7 +194,7 @@ Copy and customize for your needs!
 ```
 Estyma Igneo Slim (RS485)
     ↓
-Vide.Net Internet Module (10.73.40.40)
+Vide.Net Internet Module (local network)
     ↓
 igneo.pl Service (API)
     ↓

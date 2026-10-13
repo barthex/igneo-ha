@@ -1,11 +1,15 @@
 #!/usr/bin/env python3
-"""Explore local Estyma module API (10.73.40.40)"""
+"""Explore local Estyma module API
+
+Set your local Vide.Net module IP in MODULE_IP variable.
+Find it in your boiler's network configuration or admin panel.
+"""
 
 import requests
 import json
 from urllib.parse import urljoin
 
-MODULE_IP = "10.73.40.40"
+MODULE_IP = "YOUR_MODULE_IP"  # e.g., 192.168.1.100
 PORTS = [80, 8080, 5000, 3000, 9000, 8000]
 PATHS = [
     "/",
