@@ -10,11 +10,11 @@ from homeassistant.data_entry_flow import FlowResult
 
 from . import DOMAIN, CONF_DEVICE_ID
 
+_LOGGER = logging.getLogger(__name__)
+
 CONF_FUEL_CAPACITY = "fuel_capacity"
 CONF_DAILY_CONSUMPTION = "daily_consumption"
 CONF_LOW_FUEL_THRESHOLD = "low_fuel_threshold"
-
-_LOGGER = logging.getLogger(__name__)
 
 
 class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
