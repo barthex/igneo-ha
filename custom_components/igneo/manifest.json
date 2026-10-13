@@ -1,0 +1,15 @@
+{
+  "domain": "igneo",
+  "name": "Estyma Igneo Slim",
+  "codeowners": ["@bartosztalaga"],
+  "config_flow": true,
+  "documentation": "https://github.com/bartosztalaga/estyma-sterownik",
+  "issue_tracker": "https://github.com/bartosztalaga/estyma-sterownik/issues",
+  "requirements": [
+    "requests==2.32.3",
+    "selenium==4.51.0",
+    "webdriver-manager==4.1.2"
+  ],
+  "version": "0.1.0",
+  "homeassistant": "2024.1.0"
+}

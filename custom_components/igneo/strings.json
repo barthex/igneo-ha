@@ -1,0 +1,23 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Configure Estyma Igneo Slim",
+        "description": "Enter your igneo.pl credentials and device ID",
+        "data": {
+          "username": "Username",
+          "password": "Password",
+          "device_id": "Device ID (from igneo.pl)"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "Invalid username or password",
+      "cannot_connect": "Cannot connect to device or fetch data",
+      "unknown": "Unknown error occurred"
+    },
+    "abort": {
+      "already_configured": "Device is already configured"
+    }
+  }
+}
