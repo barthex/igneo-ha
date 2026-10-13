@@ -19,7 +19,7 @@ USERNAME = os.getenv("USERNAME")
 PASSWORD = os.getenv("PASSWORD")
 
 # Device ID z HAR file
-DEVICE_ID = "2023873659"
+DEVICE_ID = "YOUR_DEVICE_ID"
 
 def main():
     print("\n" + "="*60)

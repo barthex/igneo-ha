@@ -82,7 +82,7 @@ scripts/
 7. Enter credentials:
    - **Username**: your igneo.pl login
    - **Password**: your igneo.pl password
-   - **Device ID**: found in igneo.pl URL (e.g., `https://igneo.pl/device/2023873659`)
+   - **Device ID**: found in igneo.pl URL (e.g., `https://igneo.pl/device/YOUR_DEVICE_ID`)
 
 ### Manual Installation
 
@@ -109,7 +109,7 @@ Cookies are cached in `~/.igneo/` directory as JSON files.
 ### Device ID
 
 You can find your device ID in:
-- igneo.pl dashboard URL: `https://igneo.pl/device/2023873659`
+- igneo.pl dashboard URL: `https://igneo.pl/device/YOUR_DEVICE_ID`
 - Or get it from HAR file analysis
 
 ## Features
@@ -152,19 +152,19 @@ You can find your device ID in:
 # Set CWU temperature
 - service: igneo.set_cwu_temperature
   data:
-    device_id: "2023873659"
+    device_id: "YOUR_DEVICE_ID"
     temperature: 50
 
 # Set room temperature
 - service: igneo.set_room_temperature
   data:
-    device_id: "2023873659"
+    device_id: "YOUR_DEVICE_ID"
     temperature: 20
 
 # Quick +1°C
 - service: igneo.increase_temperature
   data:
-    device_id: "2023873659"
+    device_id: "YOUR_DEVICE_ID"
 ```
 
 ### Template Examples

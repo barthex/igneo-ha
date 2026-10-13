@@ -36,7 +36,7 @@
   action:
     - service: igneo.increase_temperature
       data:
-        device_id: "2023873659"  # Change to your device ID
+        device_id: "YOUR_DEVICE_ID"  # Change to your device ID
     - service: input_boolean.turn_off
       entity_id: input_boolean.igneo_increase_temp
 
@@ -50,7 +50,7 @@
   action:
     - service: igneo.decrease_temperature
       data:
-        device_id: "2023873659"  # Change to your device ID
+        device_id: "YOUR_DEVICE_ID"  # Change to your device ID
     - service: input_boolean.turn_off
       entity_id: input_boolean.igneo_decrease_temp
 
@@ -67,7 +67,7 @@
   action:
     - service: igneo.set_cwu_temperature
       data:
-        device_id: "2023873659"  # Change to your device ID
+        device_id: "YOUR_DEVICE_ID"  # Change to your device ID
         temperature: 50
 
 # Night economy - decrease temperature at 22:00
@@ -79,7 +79,7 @@
   action:
     - service: igneo.set_cwu_temperature
       data:
-        device_id: "2023873659"  # Change to your device ID
+        device_id: "YOUR_DEVICE_ID"  # Change to your device ID
         temperature: 42
 
 # Vacation mode - minimal heating
@@ -92,11 +92,11 @@
   action:
     - service: igneo.set_cwu_temperature
       data:
-        device_id: "2023873659"  # Change to your device ID
+        device_id: "YOUR_DEVICE_ID"  # Change to your device ID
         temperature: 35
     - service: igneo.set_room_temperature
       data:
-        device_id: "2023873659"  # Change to your device ID
+        device_id: "YOUR_DEVICE_ID"  # Change to your device ID
         temperature: 15
 
 # Daily fuel consumption log

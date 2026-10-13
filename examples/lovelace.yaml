@@ -83,7 +83,7 @@ cards:
           action: call-service
           service: igneo.increase_temperature
           data:
-            device_id: "2023873659"
+            device_id: "YOUR_DEVICE_ID"
 
       - type: button
         name: "Zmniejsz CWU"
@@ -92,7 +92,7 @@ cards:
           action: call-service
           service: igneo.decrease_temperature
           data:
-            device_id: "2023873659"
+            device_id: "YOUR_DEVICE_ID"
 
   # Statistics
   - type: entities
