@@ -1,59 +1,59 @@
 # Example Lovelace configuration for Estyma Igneo Slim
-# Add this to your Home Assistant dashboard or configuration.yaml
+# Add this to your Home Assistant dashboard or lovelace configuration
 
 type: vertical-stack
 cards:
   # Header
   - type: heading
-    heading: "🔥 Estyma Igneo Slim"
+    heading: "🔥 Estyma Igneo Slim Boiler System"
     heading_level: 2
 
   # Status overview
   - type: entities
-    title: "Status"
+    title: "System Status"
     entities:
       - entity: sensor.igneo_burner_status
-        name: "Palnik"
+        name: "Burner Status"
       - entity: binary_sensor.igneo_burner_active
-        name: "Grzanie"
+        name: "Currently Heating"
       - entity: binary_sensor.igneo_low_fuel_alert
-        name: "Brak paliwa"
+        name: "Low Fuel Alert"
       - entity: binary_sensor.igneo_high_boiler_temperature
-        name: "Wysoka temp"
+        name: "High Temperature Alert"
 
   # Temperature monitoring
   - type: horizontal-stack
     cards:
       - type: custom:button-card
         entity: sensor.igneo_boiler_temperature
-        name: "Kocioł"
+        name: "Boiler"
         icon: mdi:thermometer
         show_state: true
         state_display: "[[[ return entity.state + '°C' ]]]"
 
       - type: custom:button-card
         entity: sensor.igneo_room_temperature
-        name: "Pokój"
+        name: "Room"
         icon: mdi:home-thermometer
         show_state: true
         state_display: "[[[ return entity.state + '°C' ]]]"
 
       - type: custom:button-card
         entity: sensor.igneo_cwu_temperature
-        name: "CWU"
+        name: "Hot Water"
         icon: mdi:water-thermometer
         show_state: true
         state_display: "[[[ return entity.state + '°C' ]]]"
 
-  # CWU Temperature Control
+  # Hot Water (CWU) Temperature Control
   - type: thermostat
     entity: climate.igneo_hot_water_cwu
-    title: "Gorąca Woda"
+    title: "Hot Water Temperature"
 
   # Room Temperature Control
   - type: thermostat
     entity: climate.igneo_room_temperature
-    title: "Temperatura Pokoju"
+    title: "Room Temperature"
 
   # Fuel consumption gauge
   - type: gauge
@@ -71,13 +71,13 @@ cards:
       - from: 75
         color: "#2ecc71"
     needle: true
-    title: "Paliwo"
+    title: "Fuel Level"
 
-  # Quick actions
+  # Quick action buttons
   - type: horizontal-stack
     cards:
       - type: button
-        name: "Zwiększ CWU"
+        name: "Increase Temp"
         icon: mdi:chevron-up
         tap_action:
           action: call-service
@@ -86,7 +86,7 @@ cards:
             device_id: "YOUR_DEVICE_ID"
 
       - type: button
-        name: "Zmniejsz CWU"
+        name: "Decrease Temp"
         icon: mdi:chevron-down
         tap_action:
           action: call-service
@@ -94,24 +94,27 @@ cards:
           data:
             device_id: "YOUR_DEVICE_ID"
 
-  # Statistics
+  # Additional statistics
   - type: entities
-    title: "Dane"
+    title: "Boiler Statistics"
     entities:
       - entity: sensor.igneo_fuel_counter
-        name: "Licznik paliwa"
+        name: "Fuel Counter"
       - entity: sensor.igneo_oxygen_level
-        name: "Tlen w spalinach"
+        name: "Oxygen Level in Exhaust"
       - entity: sensor.igneo_boiler_calculated_temperature
-        name: "Temp obliczona"
+        name: "Calculated Temperature"
+      - entity: sensor.igneo_device_type
+        name: "Device Type"
 
-  # History chart (requires history-stats)
+  # Temperature history chart (requires mini-graph-card custom component)
+  # Install from HACS: Frontend → mini-graph-card
   - type: custom:mini-graph-card
     entities:
       - sensor.igneo_boiler_temperature
       - sensor.igneo_room_temperature
       - sensor.igneo_cwu_temperature
-    name: "Historia Temperatur"
+    name: "Temperature History"
     line_width: 2
     font_size: 80
     hours_to_show: 24

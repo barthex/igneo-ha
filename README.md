@@ -1,64 +1,39 @@
 # Estyma Igneo Slim — Home Assistant Integration
 
-Integracja sterownika pieca Estyma Igneo Slim z Home Assistantem poprzez serwis igneo.pl.
+A complete Home Assistant integration for Estyma Igneo Slim boiler controller via igneo.pl service.
 
-## Funktionalność
+## Features
 
-- ✅ Włączanie/wyłączanie grzania
-- ✅ Podgląd temperatury zewnętrznej
-- ✅ Podgląd temperatury kotła
-- ✅ Status kotła (modulacja, zatrzymany, rozpalanie, czyszczenie)
-- ✅ Podgląd statusu CWU
-- ✅ Statystyki zużycia paliwa
-- ⏳ Alert o możliwym końcu paliwa
-- ⏳ Rekomendacje optymalizacyjne
+### Sensors (11 entities)
+- 📊 Real-time sensor data (boiler temp, room temp, CWU temp)
+- ⛽ Fuel consumption tracking in kg with low fuel alerts
+- 💨 Oxygen level monitoring
+- 🏢 Device information (type, number of circuits)
+- 🔥 Burner status (heating, ignition, pause, cleaning)
 
-## Architektura
+### Climate Control
+- 🚰 Hot water (CWU) thermostat (30-60°C)
+- 🏠 Room temperature controller (10-30°C)
+- Smooth temperature adjustments via Home Assistant
 
-```
-igneo.pl API
-     ↓
-src/igneo_api.py (Python client)
-     ↓
-custom_components/igneo/ (Home Assistant component)
-     ↓
-Home Assistant Entities & Services
-```
+### Alerts & Automation
+- 🚨 **Binary Sensors** - 3 alert conditions:
+  - Low fuel alert (< 50kg)
+  - Burner running status
+  - High boiler temperature (> 80°C)
 
-## Setup
+### Services (call from automations)
+- `igneo.set_cwu_temperature` - Set hot water temperature
+- `igneo.set_room_temperature` - Set room temperature
+- `igneo.increase_temperature` - Increase +1°C
+- `igneo.decrease_temperature` - Decrease -1°C
 
-### Wymagania
-
-- Python 3.11+
-- Home Assistant 2024+
-- Dostęp do igneo.pl
-
-### Instalacja
-
-```bash
-# Clone
-git clone <repo>
-cd estyma-sterownik
-
-# Ustawienia
-cp envs/.env.example envs/.env.local
-# Edytuj envs/.env.local z loginem i hasłem
-```
-
-## Struktura
-
-```
-src/
-  igneo_api.py      # API client
-  models.py         # Data models
-custom_components/igneo/
-  manifest.json     # HA component metadata
-  __init__.py       # Component loader
-  api.py            # API integration
-  entities.py       # HA entities
-scripts/
-  explore_api.py    # API exploration tool
-```
+### Other Features
+- 🔄 Automatic polling every 5 minutes
+- 📱 Cookie caching for efficient Raspberry Pi 4 usage
+- 📋 7 example automations included
+- 🎨 Lovelace dashboard template
+- 🔐 Secure authentication via Selenium
 
 ## Installation
 
@@ -110,39 +85,7 @@ Cookies are cached in `~/.igneo/` directory as JSON files.
 
 You can find your device ID in:
 - igneo.pl dashboard URL: `https://igneo.pl/device/YOUR_DEVICE_ID`
-- Or get it from HAR file analysis
-
-## Features
-
-### Sensors (11 entities)
-- 📊 Real-time sensor data (temperatures, fuel counter, burner status)
-- 🌡️ Boiler, room, CWU temperatures
-- ⛽ Fuel consumption in kg (with low fuel alert)
-- 💨 Oxygen level monitoring
-- 🏢 Device info (type, circuits)
-
-### Climate Control
-- 🚰 Hot water (CWU) thermostat (30-60°C)
-- 🏠 Room temperature controller (10-30°C)
-- Smooth temperature adjustments
-
-### Alerts & Automation
-- 🚨 **Binary Sensors** - 3 alert conditions:
-  - Low fuel (< 50kg)
-  - Burner running status
-  - High boiler temp (> 80°C)
-
-### Services (call from automations)
-- `igneo.set_cwu_temperature` - Set hot water temp
-- `igneo.set_room_temperature` - Set room temp
-- `igneo.increase_temperature` - +1°C
-- `igneo.decrease_temperature` - -1°C
-
-### Other
-- 🔄 Automatic polling every 5 minutes
-- 📱 Cookie caching for RPi4 efficiency
-- 📋 7 example automations included
-- 🎨 Lovelace dashboard template
+- Or get it from HAR file analysis (DevTools Network tab)
 
 ## Usage Examples
 
@@ -192,20 +135,124 @@ Check `examples/` directory:
 
 Copy and customize for your needs!
 
-## Development
+## Architecture
 
-```bash
-# Test API client
-python3 scripts/test_api.py
-
-# Explore API
-python3 scripts/explore_api.py
+```
+Estyma Igneo Slim (RS485)
+    ↓
+Vide.Net Internet Module (10.73.40.40)
+    ↓
+igneo.pl Service (API)
+    ↓
+Python API Client (src/igneo_api.py)
+    ↓
+Home Assistant Integration
+    ↓
+Sensors, Climate, Binary Sensors, Services
 ```
 
-## Status
+## Technical Details
 
-✅ Faza 1: Reverse engineering API igneo.pl - DONE
-✅ Faza 2: Python API client - DONE
-✅ Faza 3: Home Assistant integration - DONE
-⏳ Faza 4: Climate entity (temperature control)
-⏳ Faza 5: Service calls (setting parameters)
+### API Reverse Engineering
+
+The integration communicates with igneo.pl service through three endpoints:
+- `POST /info_panel_update` - Get device data
+- `POST /info_set_order` - Set parameters
+- `POST /info_check_order` - Check order status
+
+Authentication is handled via HTML form login, then cookies are cached for efficiency.
+
+### Cookie Caching
+
+First run uses Selenium for authentication (browser automation), subsequent runs use cached cookies. This reduces RAM usage from ~500MB to ~10MB per polling cycle.
+
+## Requirements
+
+- Home Assistant 2024.1.0+
+- Python 3.11+
+- requests library
+- selenium (for first login)
+- webdriver-manager (for Chrome driver)
+
+## Development
+
+### Setup
+
+```bash
+# Clone repo
+git clone https://github.com/barthex/igneo-ha.git
+cd igneo-ha
+
+# Setup venv
+bash setup.sh
+source venv/bin/activate
+
+# Test API client
+python3 scripts/test_api.py
+```
+
+### Project Structure
+
+```
+src/
+  igneo_api.py      # Python API client with cookie caching
+  models.py         # Data models
+custom_components/igneo/
+  __init__.py       # Integration setup
+  sensor.py         # Sensor entities
+  climate.py        # Climate/thermostat entities
+  binary_sensor.py  # Alert sensors
+  services.py       # Custom services
+  config_flow.py    # Setup wizard
+  manifest.json     # Metadata
+examples/
+  automations.yaml  # Example automations
+  lovelace.yaml     # Dashboard configuration
+scripts/
+  test_api.py       # API testing tool
+```
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on:
+- Reporting bugs
+- Submitting pull requests
+- Development setup
+- Code style
+
+## License
+
+MIT License - see [LICENSE](LICENSE) file
+
+## Disclaimer
+
+This integration is not affiliated with Estyma Electronics. Use at your own risk. The authors are not responsible for any issues arising from the use of this integration.
+
+## Support
+
+- 📖 [GitHub Issues](https://github.com/barthex/igneo-ha/issues) - Report bugs
+- 💬 [Discussions](https://github.com/barthex/igneo-ha/discussions) - Ask questions
+- 🚀 [Releases](https://github.com/barthex/igneo-ha/releases) - Check updates
+
+## Roadmap
+
+- [x] API client with authentication
+- [x] Sensor entities (11)
+- [x] Climate entities (2)
+- [x] Binary sensor alerts (3)
+- [x] Custom services (4)
+- [x] Home Assistant integration
+- [x] HACS support
+- [ ] Energy dashboard integration
+- [ ] Statistics and history tracking
+- [ ] Multi-device support
+- [ ] Advanced automation templates
+
+## Changelog
+
+### v0.1.0 (2026-10-13)
+- Initial release
+- Basic sensor and climate entities
+- Binary sensors with alerts
+- Example automations and dashboard
+- RPi4 optimization with cookie caching

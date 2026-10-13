@@ -1,4 +1,5 @@
 # Example automations for Estyma Igneo Slim integration
+# Copy these to your Home Assistant automations.yaml and customize as needed
 
 # Alert when fuel is low (< 50kg)
 - alias: "Igneo - Low Fuel Alert"
@@ -10,11 +11,11 @@
   action:
     - service: notify.notify
       data:
-        message: "⛽ Low fuel alert! Only {{ state_attr('sensor.igneo_fuel_counter', 'value') | int(0) / 1000 }}kg remaining"
+        message: "⛽ Low fuel alert! Only {{ (state_attr('sensor.igneo_fuel_counter', 'value') | int(0)) / 1000 }}kg remaining"
         title: "Estyma Igneo Slim"
 
 # Alert on high boiler temperature
-- alias: "Igneo - High Boiler Temperature"
+- alias: "Igneo - High Boiler Temperature Alert"
   description: "Send alert if boiler temperature exceeds 80°C"
   trigger:
     - platform: state
@@ -26,7 +27,7 @@
         message: "🔥 High boiler temperature: {{ state_attr('sensor.igneo_boiler_temperature', 'value') }}°C"
         title: "Estyma Igneo Slim"
 
-# Increase CWU temp button automation
+# Increase CWU temperature button automation
 - alias: "Igneo - Increase CWU Temperature"
   description: "Increase hot water temperature by 1°C"
   trigger:
@@ -40,7 +41,7 @@
     - service: input_boolean.turn_off
       entity_id: input_boolean.igneo_increase_temp
 
-# Decrease CWU temp button automation
+# Decrease CWU temperature button automation
 - alias: "Igneo - Decrease CWU Temperature"
   description: "Decrease hot water temperature by 1°C"
   trigger:
@@ -55,8 +56,8 @@
       entity_id: input_boolean.igneo_decrease_temp
 
 # Morning boost - increase temperature at 6 AM
-- alias: "Igneo - Morning Boost"
-  description: "Increase CWU temperature in the morning"
+- alias: "Igneo - Morning Temperature Boost"
+  description: "Increase CWU temperature in the morning for hot water availability"
   trigger:
     - platform: time
       at: "06:00:00"
@@ -70,8 +71,8 @@
         device_id: "YOUR_DEVICE_ID"  # Change to your device ID
         temperature: 50
 
-# Night economy - decrease temperature at 22:00
-- alias: "Igneo - Night Economy"
+# Night economy mode - decrease temperature at 22:00
+- alias: "Igneo - Night Economy Mode"
   description: "Decrease CWU temperature at night for energy saving"
   trigger:
     - platform: time
@@ -83,8 +84,8 @@
         temperature: 42
 
 # Vacation mode - minimal heating
-- alias: "Igneo - Vacation Mode On"
-  description: "Set minimal heating when leaving home"
+- alias: "Igneo - Vacation Mode Activated"
+  description: "Set minimal heating when leaving home for vacation"
   trigger:
     - platform: state
       entity_id: input_boolean.vacation_mode
@@ -100,8 +101,8 @@
         temperature: 15
 
 # Daily fuel consumption log
-- alias: "Igneo - Daily Fuel Report"
-  description: "Log fuel consumption every day at 23:00"
+- alias: "Igneo - Daily Statistics Log"
+  description: "Log fuel consumption and boiler statistics daily at 23:00"
   trigger:
     - platform: time
       at: "23:00:00"
@@ -110,7 +111,9 @@
       data:
         level: INFO
         message: |
-          Igneo daily stats:
-          Fuel counter: {{ state_attr('sensor.igneo_fuel_counter', 'value') | int(0) / 1000 }}kg
-          Boiler temp: {{ state_attr('sensor.igneo_boiler_temperature', 'value') }}°C
+          Igneo Daily Statistics:
+          Fuel counter: {{ (state_attr('sensor.igneo_fuel_counter', 'value') | int(0)) / 1000 }}kg
+          Boiler temperature: {{ state_attr('sensor.igneo_boiler_temperature', 'value') }}°C
+          Room temperature: {{ state_attr('sensor.igneo_room_temperature', 'value') }}°C
           Burner status: {{ state_attr('sensor.igneo_burner_status', 'value') }}
+          CWU temperature: {{ state_attr('sensor.igneo_cwu_temperature', 'value') }}°C
