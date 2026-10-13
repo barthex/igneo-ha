@@ -92,8 +92,9 @@ A complete Home Assistant integration for Estyma Igneo Slim boiler controller vi
      - **Username**: your igneo.pl login
      - **Password**: your igneo.pl password  
      - **Device ID**: from igneo.pl URL (e.g., `https://igneo.pl/device/YOUR_DEVICE_ID`)
-     - **Standard fuel load**: 75 (adjust to your typical refill amount)
-     - **Daily consumption**: 5 (adjust based on heating needs)
+     - **Standard fuel load**: 75kg (adjust to your typical refill: 5×15kg bags)
+     - **Daily consumption**: 5kg/day (adjust based on heating season)
+     - **Low fuel alert threshold**: 15kg (default - alert when below this level)
    - Click **Create**
 
 7. **Enjoy!**

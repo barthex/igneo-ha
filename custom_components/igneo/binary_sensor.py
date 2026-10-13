@@ -24,7 +24,7 @@ async def async_setup_entry(
     coordinator: IgleoDataUpdateCoordinator = hass.data[DOMAIN][entry.entry_id]
 
     sensors = [
-        IgleoLowFuelSensor(coordinator, "Low Fuel Alert"),
+        IgleoLowFuelSensor(coordinator, "Low Fuel Alert"),  # Threshold configurable in setup
         IgleoBurnerRunning(coordinator, "Burner Active"),
         IgleoHighBoilerTempSensor(coordinator, "High Boiler Temperature"),
     ]
@@ -69,16 +69,18 @@ class IgleoBaseBinarySensor(BinarySensorEntity):
 
 
 class IgleoLowFuelSensor(IgleoBaseBinarySensor):
-    """Low fuel alert sensor (alert when < 50kg)."""
+    """Low fuel alert sensor (configurable threshold, default 15kg)."""
 
     _attr_device_class = BinarySensorDeviceClass.PROBLEM
 
     @property
     def is_on(self):
-        """Return True if fuel is low."""
+        """Return True if fuel is below threshold."""
         if self.coordinator.data:
-            # Alert if less than 50kg
-            return self.coordinator.data.fuel_counter < 50000
+            # Get threshold from config (default 15kg)
+            threshold_kg = self.coordinator.config.get("low_fuel_threshold", 15)
+            threshold = threshold_kg * 1000  # Convert to counter units
+            return self.coordinator.data.fuel_counter < threshold
         return False
 
 
