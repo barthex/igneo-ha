@@ -92,12 +92,83 @@ You can find your device ID in:
 
 ## Features
 
+### Sensors (11 entities)
 - 📊 Real-time sensor data (temperatures, fuel counter, burner status)
+- 🌡️ Boiler, room, CWU temperatures
+- ⛽ Fuel consumption in kg (with low fuel alert)
+- 💨 Oxygen level monitoring
+- 🏢 Device info (type, circuits)
+
+### Climate Control
+- 🚰 Hot water (CWU) thermostat (30-60°C)
+- 🏠 Room temperature controller (10-30°C)
+- Smooth temperature adjustments
+
+### Alerts & Automation
+- 🚨 **Binary Sensors** - 3 alert conditions:
+  - Low fuel (< 50kg)
+  - Burner running status
+  - High boiler temp (> 80°C)
+
+### Services (call from automations)
+- `igneo.set_cwu_temperature` - Set hot water temp
+- `igneo.set_room_temperature` - Set room temp
+- `igneo.increase_temperature` - +1°C
+- `igneo.decrease_temperature` - -1°C
+
+### Other
 - 🔄 Automatic polling every 5 minutes
-- 🌡️ Temperature monitoring and alerts
-- ⛽ Fuel consumption tracking
-- 🔥 Burner status notifications
-- 🚰 Hot water (CWU) temperature monitoring
+- 📱 Cookie caching for RPi4 efficiency
+- 📋 7 example automations included
+- 🎨 Lovelace dashboard template
+
+## Usage Examples
+
+### Service Calls (in automations)
+
+```yaml
+# Set CWU temperature
+- service: igneo.set_cwu_temperature
+  data:
+    device_id: "2023873659"
+    temperature: 50
+
+# Set room temperature
+- service: igneo.set_room_temperature
+  data:
+    device_id: "2023873659"
+    temperature: 20
+
+# Quick +1°C
+- service: igneo.increase_temperature
+  data:
+    device_id: "2023873659"
+```
+
+### Template Examples
+
+```jinja2
+# Get fuel in kilograms
+{{ (state_attr('sensor.igneo_fuel_counter', 'value') | int(0)) / 1000 }}kg
+
+# Check if heating
+{% if state_attr('binary_sensor.igneo_burner_active', 'state') == 'on' %}
+  Heating active
+{% endif %}
+
+# Alert on low fuel
+{% if states('binary_sensor.igneo_low_fuel_alert') == 'on' %}
+  ⛽ Low fuel alert!
+{% endif %}
+```
+
+### Ready-to-Use Examples
+
+Check `examples/` directory:
+- **automations.yaml** - 7 example automations
+- **lovelace.yaml** - Dashboard configuration
+
+Copy and customize for your needs!
 
 ## Development
 
