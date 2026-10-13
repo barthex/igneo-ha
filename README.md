@@ -100,7 +100,17 @@ A complete Home Assistant integration for Estyma Igneo Slim boiler controller vi
    - Boiler data appears in Home Assistant
    - Sensors available in automations, templates, etc.
 
+**Note:** Currently requires manual custom repository setup. 
+This is temporary while the integration is still in development. 
+Future versions will be available directly from HACS marketplace.
+
 **No command line, no git clone needed!** 🎉
+
+### HACS Default Registry (Work in Progress)
+
+⏳ **Status:** Planning to submit to HACS Default Registry in future versions
+
+Currently available through **Custom Repositories** only. Once stability is proven (v0.2.0+), we'll submit for inclusion in the official HACS marketplace.
 
 ### Manual Installation
 
@@ -279,17 +289,25 @@ This integration is not affiliated with Estyma Electronics. Use at your own risk
 
 ## Roadmap
 
-- [x] API client with authentication
-- [x] Sensor entities (11)
-- [x] Climate entities (2)
-- [x] Binary sensor alerts (3)
-- [x] Custom services (4)
+### ✅ Completed (v0.1.0)
+- [x] API client with authentication & cookie caching
+- [x] Sensor entities (11 - temps, fuel, status)
+- [x] Climate entities (2 - CWU & room thermostats)
+- [x] Binary sensor alerts (3 - low fuel, high temp, burner status)
+- [x] Custom services (4 - temperature control)
 - [x] Home Assistant integration
-- [x] HACS support
+- [x] HACS custom repository support
+- [x] Fuel estimation with configurable consumption
+- [x] Full English documentation
+
+### 🔄 In Progress / Planned (v0.2.0+)
+- [ ] **HACS Default Registry** (after stability proven)
 - [ ] Energy dashboard integration
 - [ ] Statistics and history tracking
-- [ ] Multi-device support
+- [ ] Multi-device support per user
 - [ ] Advanced automation templates
+- [ ] Mobile app support
+- [ ] Webhook support for external integrations
 
 ## Changelog
 
