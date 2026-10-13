@@ -32,14 +32,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         if user_input is not None:
             # Validate credentials
             try:
-                import sys
-                from pathlib import Path
-
-                src_path = str(Path(__file__).parent.parent.parent / "src")
-                if src_path not in sys.path:
-                    sys.path.insert(0, src_path)
-
-                from igneo_api import IgleoClient
+                from .igneo_api import IgleoClient
 
                 client = IgleoClient(
                     user_input[CONF_USERNAME],
