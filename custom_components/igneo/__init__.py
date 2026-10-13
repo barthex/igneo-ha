@@ -81,16 +81,7 @@ class IgleoDataUpdateCoordinator(DataUpdateCoordinator):
     async def _async_update_data(self):
         """Fetch data from Igneo API."""
         try:
-            # Import here to avoid circular imports
-            import sys
-            from pathlib import Path
-
-            # Add src to path for igneo_api import
-            src_path = str(Path(__file__).parent.parent.parent / "src")
-            if src_path not in sys.path:
-                sys.path.insert(0, src_path)
-
-            from igneo_api import IgleoClient
+            from .igneo_api import IgleoClient
 
             if not self._client:
                 self._client = IgleoClient(self.username, self.password, self.device_id)
