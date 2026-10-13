@@ -37,27 +37,70 @@ A complete Home Assistant integration for Estyma Igneo Slim boiler controller vi
 
 ## Installation
 
-### 🚀 Method 1: HACS (Recommended)
+### ⚡ Quick Start (5 minutes)
 
-1. Install [HACS](https://hacs.xyz/docs/setup/prerequisites) if not already installed
+**Prerequisites:**
+- Home Assistant with HACS installed
+- igneo.pl account with Igneo Slim boiler
 
-2. In Home Assistant: **HACS → Integrations → ⋮ → Custom repositories**
+**Steps:**
+1. Open Home Assistant → HACS → Integrations
+2. Click ⋮ → **Custom repositories**
+3. Paste: `https://github.com/barthex/igneo-ha`
+4. Category: **Integration** → Create
+5. Find **Estyma Igneo Slim** → Install
+6. Restart Home Assistant
+7. Settings → Devices & Services → **+ Create Integration**
+8. Search **Igneo** → Enter credentials
 
-3. Add repository:
-   - **Repository URL**: `https://github.com/barthex/igneo-ha`
-   - **Category**: Integration
+**Done!** Your boiler is now in Home Assistant 🔥
+
+---
+
+### 🚀 Method 1: HACS (Recommended - No Git Needed)
+
+**Install from GitHub repository URL without cloning:**
+
+1. **Ensure HACS is installed**
+   - If not: https://hacs.xyz/docs/setup/prerequisites
+
+2. **Open HACS in Home Assistant**
+   - Go to: **HACS** → **Integrations**
+
+3. **Add Custom Repository**
+   - Click the **⋮** (three dots) in top-right corner
+   - Select **Custom repositories**
+   - Paste repository URL: `https://github.com/barthex/igneo-ha`
+   - Choose Category: **Integration**
    - Click **Create**
 
-4. Find **Estyma Igneo Slim** in HACS → **Install**
+4. **Install Integration**
+   - Search for **"Estyma Igneo Slim"**
+   - Click the result
+   - Click **Install**
+   - Wait for installation to complete
 
-5. **Restart** Home Assistant
+5. **Restart Home Assistant**
+   - Settings → System → Restart
 
-6. Go to **Settings → Devices & Services → Create Integration → Igneo**
+6. **Configure Integration**
+   - Settings → Devices & Services
+   - Click **+ Create Integration**
+   - Search for **"Igneo"**
+   - Click result
+   - Enter your details:
+     - **Username**: your igneo.pl login
+     - **Password**: your igneo.pl password  
+     - **Device ID**: from igneo.pl URL (e.g., `https://igneo.pl/device/YOUR_DEVICE_ID`)
+     - **Standard fuel load**: 75 (adjust to your typical refill amount)
+     - **Daily consumption**: 5 (adjust based on heating needs)
+   - Click **Create**
 
-7. Enter credentials:
-   - **Username**: your igneo.pl login
-   - **Password**: your igneo.pl password
-   - **Device ID**: found in igneo.pl URL (e.g., `https://igneo.pl/device/YOUR_DEVICE_ID`)
+7. **Enjoy!**
+   - Boiler data appears in Home Assistant
+   - Sensors available in automations, templates, etc.
+
+**No command line, no git clone needed!** 🎉
 
 ### Manual Installation
 
