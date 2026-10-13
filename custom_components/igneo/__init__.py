@@ -19,7 +19,7 @@ _LOGGER = logging.getLogger(__name__)
 DOMAIN = "igneo"
 CONF_DEVICE_ID = "device_id"
 
-PLATFORMS = [Platform.CLIMATE, Platform.SENSOR]
+PLATFORMS = [Platform.SENSOR, Platform.CLIMATE]
 
 SCAN_INTERVAL = timedelta(minutes=5)
 
